@@ -6,7 +6,7 @@ struct sparse_table {
     sparse_table(vector<ll> &a) {
         n = a.size();
         level = ceil(log2(n));
-        table.resize(n, vector<ll> (level));
+        table.resize(n, vector<ll> (level + 1));
         lg.resize(n + 1);
         build(a);
     }
@@ -19,9 +19,9 @@ struct sparse_table {
         for(int i = 0; i < n; ++i) 
             table[i][0] = a[i];
         
-        for(int j = 1; j < level; ++j) {
+        for(int j = 1; j <= level; ++j) {
             for(int i = 0; i + (1LL << j) <= n; ++i) {
-                table[i][j] = min(table[i][j - 1], table[i + (1LL << (j - 1))][j - 1]);
+                table[i][j] = max(table[i][j - 1], table[i + (1LL << (j - 1))][j - 1]);
             }
         }
     }
@@ -30,6 +30,6 @@ struct sparse_table {
         l--, r--;
         ll j = lg[r - l + 1];
     
-        return min(table[l][j], table[r - (1LL << j) + 1][j]);
+        return max(table[l][j], table[r - (1LL << j) + 1][j]);
     }
 };
